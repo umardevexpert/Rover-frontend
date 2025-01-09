@@ -1,0 +1,21 @@
+# ©2022 TypeSoft s. r. o. All rights reserved.
+
+name: client_kit
+description: Defines standard functionality for frequent aspects of client-side code like authorization handling.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  master_kit:
+    path: ../master_kit
+  rxdart: ^0.27.7
+  collection: ^1.18.0
+  meta: ^1.10.0
+  email_validator: ^2.1.17
+  get_it: any
+
+dev_dependencies:
+  lints: ^3.0.0

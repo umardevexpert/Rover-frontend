@@ -1,0 +1,28 @@
+# ©2022 TypeSoft s. r. o. All rights reserved.
+
+name: database_kit
+description: This kit uses a modified repository pattern to define database standardized operations over remote persistent data.
+version: 0.1.0
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  master_kit:
+    path: ../master_kit
+  collection: ^1.18.0
+  rxdart: ^0.27.7
+  get_it: any
+  json_annotation: any
+  meta: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.3
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:

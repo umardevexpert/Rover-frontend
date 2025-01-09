@@ -1,0 +1,4 @@
+enum AuthEventType {
+  willChangeAuthState,
+  didChangeAuthState,
+}

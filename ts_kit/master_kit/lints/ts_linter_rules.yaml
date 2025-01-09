@@ -1,0 +1,337 @@
+# This file configures the static code analysis rules for the project (errors, warnings, and lints). Together with
+# coding practises, these rules constitute TypeSoft's Dart/Flutter style guide. Team-wide discussion about the rules
+# and the coding style is encouraged, especially if some of the rules are more trouble than help. However, any changes
+# to this document are to be team consensus and subject to approval by the author of these rules.
+#
+# This purpose of the rules is to set unified coding style, to help identify issues that may lead to problems when
+# running or consuming Dart code, help you learn some of the Dart's features, and to enforce writing Dart using a
+# single, idiomatic style and format.
+#
+# For more information about standard core and recommended set of lints, see
+# https://dart.dev/go/core-lints. For additional information about configuring this file, see
+# https://dart.dev/guides/language/analysis-options.
+# For list of all available lints and their documentation see https://dart-lang.github.io/linter/lints/index.html.
+
+# this is enabled to allow important new rules to be automatically applied as they are released without need to change
+# this document. This should be replaced with flutter.yaml for Flutter projects.
+include: package:lints/recommended.yaml
+
+# ---- THE USAGE OF THE LINT RULES ----
+#
+# The rules must be either honored or silenced in-line using comment `// ignore: name_of_lint`. In very rare cases of
+# using non-standard programing practices for a valid reasons in an entire file, the rule may be silenced for such file
+# using `// ignore_for_file: name_of_lint` syntax.
+#
+# Each silenced rule should be either false positive or permissible exception:
+# - False positives are occurrences where the change suggested by the rule is worse than the original code. All the
+#   false positive silences must be reported on the following Notion page to help recognize rules which do not work
+#   well: https://www.notion.so/typesoft/Lint-Rules-False-Positives-93915a20453c41ab96cb53cdd87d14ab
+# - Permissible exception is when a rule suggests an edit that would improve the code style itself but in that specific
+#   situation the code would become too unpractical or would case another issue. This is often because the code is
+#   knowingly very non-standard, something we normally would not want to do. E.g. a hack to work around a package
+#   limitation or bug. Special attention is to be paid to all Permissible exceptions during code reviews.
+
+# ---- LINT RULES SEVERITY PRINCIPLES ----
+#
+# - Lints that cause ERRORS should be used to:
+#   - Forbid alternative old-school syntax that should have been deprecated never supported at the first place.
+#   - Rule out obscurities that the language allows but which should not have been allowed by the compiler in the first
+#     place, e.g. returning value (null) from void function.
+#   - Mark code that very ofter leads to semantic errors that result in bugs like implementing hashCode without equals.
+#   - Error lints should not be used if it is expected that a temporary state of code while it is being written with
+#     intention to reach valid state of the code may trigger the error. This is because error lints should not make the
+#     developer wonder what is wrong with the code while he is writing good code. Following up on this goal lints that
+#     have a fix which does not negatively interfere with developer's work, e.g. it just adds code that dev would write
+#     anyway
+
+# NOTE: After changing the rules, make sure to restart Android Studio for the changes to apply.
+
+#code-style:
+#  format: # TODO research what can we do here
+analyzer:
+  exclude:
+    - build/**
+  errors:
+    invalid_use_of_protected_member: error
+    always_use_package_imports: error
+    prefer_single_quotes: error
+    avoid_dynamic_calls: warning # change to errors once union types are added to Dart
+    cancel_subscriptions: warning
+    close_sinks: warning
+    comment_references: warning
+    diagnostic_describe_all_properties: warning # this is turned off in style lints section
+    hash_and_equals: error
+    literal_only_boolean_expressions: warning
+    test_types_in_equals: info
+    throw_in_finally: warning
+    use_build_context_synchronously: info
+    body_might_complete_normally_nullable: error
+
+    # style lints
+    always_declare_return_types: warning
+    always_require_non_null_named_parameters: error
+    avoid_bool_literals_in_conditional_expressions: info
+    avoid_classes_with_only_static_members: warning
+    avoid_double_and_int_checks: warning
+    avoid_implementing_value_types: warning
+    avoid_js_rounded_ints: warning
+    avoid_returning_null: error
+    avoid_returning_null_for_void: error
+    avoid_returning_this: warning
+    avoid_return_types_on_setters: error
+    avoid_shadowing_type_parameters: error
+    avoid_void_async: error # CANDIDATE TO BE WARNING OR HINT - often inconvinient. Sometimes, void async return type can be intended when the method needs to appear synchronous to the outside caller but still execute with async gap - fortunatelly Future<void> can be ignored on user side
+    await_only_futures: error
+    conditional_uri_does_not_exist: error
+    exhaustive_cases: warning
+    implementation_imports: warning
+    implicit_call_tearoffs: warning
+    library_private_types_in_public_api: warning
+    null_check_on_nullable_type_parameter: error
+    null_closures: error
+    only_throw_errors: error
+    overridden_fields: warning
+    prefer_contains: warning
+    prefer_function_declarations_over_variables: warning
+    prefer_generic_function_type_aliases: error
+    prefer_if_elements_to_conditional_expressions: warning
+    prefer_inlined_adds: error
+    prefer_is_empty: warning
+    prefer_is_not_empty: warning
+    prefer_mixin: error
+    prefer_null_aware_operators: warning
+    prefer_null_aware_method_calls: warning
+    prefer_spread_collections: warning
+    prefer_typing_uninitialized_variables: error
+    provide_deprecation_message: error
+    recursive_getters: error
+    slash_for_doc_comments: warning
+    tighten_type_of_initializing_formals: warning
+    type_annotate_public_apis: error
+    unawaited_futures: warning
+    unnecessary_constructor_name: error
+    unnecessary_new: error
+    unnecessary_null_aware_assignments: error
+    unnecessary_null_in_if_null_operators: error
+    unnecessary_getters_setters: warning
+    unnecessary_raw_strings: warning
+    use_setters_to_change_properties: warning
+    use_string_buffers: warning
+    use_test_throws_matchers: warning
+    void_checks: error
+    depend_on_referenced_packages: warning
+    secure_pubspec_urls: warning
+    override_on_non_overriding_member: warning
+  language:
+    strict-inference: true
+    strict-raw-types: true
+
+linter:
+  rules:
+    always_use_package_imports: true
+    avoid_classes_with_only_static_members: true # static classes should have a private constructor which makes satisfies the linter, therefore this can be on - otherwise static classes are better than using global members because they do not polute the namespace so much and provide extra context
+    avoid_dynamic_calls: true # warning
+    avoid_empty_else: true # error, empty else is bad practise or forgotten code
+    avoid_print: false # print should not be highlighted during development and might be the only way to print to console on web in production
+    avoid_relative_lib_imports: true # error, relative imports do not have any advantage over package imports
+    avoid_slow_async_io: false # RECONSIDER: more research needed
+    avoid_type_to_string: false # .toString() might be overridden, then it is valid to use it
+    avoid_types_as_parameter_names: true
+    avoid_web_libraries_in_flutter: false # this is valid technique if there is no alternative
+    cancel_subscriptions: true # warning
+    close_sinks: true # warning
+    collection_methods_unrelated_type: true
+    comment_references: true # warning
+    control_flow_in_finally: true # recommended, may lead to unexpected behaviour
+    diagnostic_describe_all_properties: false # off, Evauation: had enormous number of false positives, all classes with final properties
+    discarded_futures: false # valid practice
+    empty_statements: true
+    hash_and_equals: true
+    iterable_contains_unrelated_type: true
+    list_remove_unrelated_type: true
+    literal_only_boolean_expressions: true # warning since this is sometimes used for testing
+    no_adjacent_strings_in_list: true
+    no_duplicate_case_values: true
+    no_logic_in_create_state: false # in some cases this can be valid practice
+    prefer_relative_imports: false
+    prefer_void_to_null: true
+    test_types_in_equals: true # info
+    throw_in_finally: true # warning, will cause unexpected behaviour
+    unnecessary_statements: true
+    unrelated_type_equality_checks: true
+    unsafe_html: false # more research needed
+    use_build_context_synchronously: true # info, in some cases might not be a problem
+    use_key_in_widget_constructors: true
+    valid_regexps: true
+
+    # style lints
+    always_declare_return_types: true # warning, Dart can often infer return type but we want to be explicit (e.g. because sometimes supertype is better) and consistent
+    unnecessary_library_directive: false # library keyword is usefull even if it has no enotations or comments - it makes it easier to use the part of directive (also when moving/renamingg files). Keep this lint off
+    always_put_control_body_on_new_line: true # info
+    always_put_required_named_parameters_first: false # causes unnecessary code movement during development, not all that important
+    always_require_non_null_named_parameters: true # error, recommended, very helpful
+    always_specify_types: false # we do not want to specify types e.g. when using final (Consider: this is inconstancy with always_declare_return_types which is on)
+    annotate_overrides: true # info, recommended, POSSIBLY RECONSIDER
+    avoid_annotating_with_dynamic: false # we want the opposite
+    avoid_bool_literals_in_conditional_expressions: true # info
+    avoid_catches_without_on_clauses: false # can be useful and valid to catch everything (e.g. to log and rethrow)
+    avoid_catching_errors: false # can be useful and valid to catch errors (e.g. to log and rethrow)
+    avoid_double_and_int_checks: true # warning, useful for projects with web compatibility (otherwise can be silenced), use comparison with floor instead: x == floor(x)
+    avoid_escaping_inner_quotes: true # info
+    avoid_field_initializers_in_const_classes: false # does not apply to JS code
+    avoid_final_parameters: false # RECONSIDER can be a good practise
+    avoid_function_literals_in_foreach_calls: false # recommended, had false positives preventing shorter, easier to read syntax. Developers should understand the differences between for cycle and forEach and use forEach correctly.
+    avoid_implementing_value_types: true # warning, avoid breaking == operator relation symmetricity requirement
+    avoid_init_to_null: true # warning, recommended, useful
+    avoid_js_rounded_ints: true # warning, useful for web compatible projects
+    avoid_multiple_declarations_per_line: false # would only limit personal programming style
+    avoid_null_checks_in_equality_operators: true # info, recommended, useful
+    avoid_equals_and_hash_code_on_mutable_classes: false # equals and hashCode can be based only on immutable fields of mutable class which is valid
+    avoid_positional_boolean_parameters: false # info, EVALUATED: While it might be useful, it also has false positives. When parameter is provided as variable, not true or false, it is ok
+    avoid_private_typedef_functions: false # if named well, such typedefs can make the code more readable by shortening long type
+    avoid_redundant_argument_values: false # you might want to be explicit and may lead to too many edits
+    avoid_renaming_method_parameters: true # info, recommended, valid argument about docs
+    avoid_returning_null: true # error
+    avoid_returning_null_for_void: true # error
+    avoid_returning_this: true # warning, cannot see when returning this would be desired other that enabling fluent interface but Dart has cascading operator for that
+    avoid_return_types_on_setters: true # error, really bad syntax, should not not be possible
+    avoid_setters_without_getters: false # it is valid to only set something, without being interested in current value
+    avoid_shadowing_type_parameters: true # error, leads to ugly bugs
+    avoid_single_cascade_in_expression_statements: true # info, recommended, prevents unnecessary/suboptimal syntactic sugar
+    avoid_types_on_closure_parameters: true # info, recommended. Only case when types are needed is `final aa = (Type1 p1) => ...` but this should be local function. RECONSIDER: This will have many false positives, see this: https://www.notion.so/typesoft/Lint-Rules-False-Positives-93915a20453c41ab96cb53cdd87d14ab#b2183082c4794e54a1f75955556c5382
+    avoid_unnecessary_containers: true # info, recommended
+    avoid_unused_constructor_parameters: true # info, EXPERIMENT - TODO(rasto) evaluate how often there was false positive
+    avoid_void_async: true # error, compiler should not allow otherwise
+    await_only_futures: true # error, recommended, compiler should not allow otherwise
+    camel_case_extensions: true # info, naming
+    camel_case_types: true # info, naming
+    cascade_invocations: false # TODO(rasto) consider give this a try, might improve style
+    cast_nullable_to_non_nullable: false # TODO(rasto) might be useful but maturity is experimental
+    combinators_ordering: true # info, improves consistency
+    conditional_uri_does_not_exist: true # error, can prevent crashes
+    constant_identifier_names: false # we use all caps for constants
+    curly_braces_in_flow_control_structures: true # info, recommended, consistent
+    dangling_library_doc_comments: true # info, improves formatting
+    deprecated_consistency: true # info, helps with deprecating stuff
+    directives_ordering: true # info, EXPERIMENT - TODO(rasto) evaluate how often there was false positive
+    do_not_use_environment: false # more research needed
+    empty_catches: true # info, recommended, removes suboptimal syntax
+    empty_constructor_bodies: true # info, recommended, removes suboptimal syntax
+    eol_at_end_of_file: true # info, consistent
+    exhaustive_cases: true # warning, recommended, can prevent bugs
+    file_names: true # info
+    flutter_style_todos: true # info, good idea
+    implementation_imports: true # warning, recommended, developer may disable when really needed
+    implicit_call_tearoffs: true # warning, experimental but very useful - prevents very unclear, "magic like" syntax
+    join_return_with_assignment: true # info, motivates for simpler code
+    leading_newlines_in_multiline_strings: true # info, improves multiline readability
+    library_names: true # info, recommended, naming
+    library_private_types_in_public_api: true # warning, recommended, prevents exposing private types in public API
+    lines_longer_than_80_chars: false # we use 120 char long lines
+    missing_whitespace_between_adjacent_strings: false # this is up the programmer - they can also split mid word
+    no_default_cases: false # may lead to unnecessarily long cases
+    non_constant_identifier_names: true # info, recommended, naming
+    no_leading_underscores_for_library_prefixes: true # info, recommended, naming
+    no_leading_underscores_for_local_identifiers: true # info, recommended, naming
+    noop_primitive_operations: true # info, removes useless code
+    no_runtimeType_toString: false # can be useful for debug purposes
+    null_check_on_nullable_type_parameter: true # error, recommended, prevents logical error TODO(rasto) evaluate how often there was false positive, change to warning if often
+    null_closures: true # error, recommended, should be compiler error
+    omit_local_variable_types: true # info, removes unnecessary types
+    one_member_abstracts: false # such abstract class can be meant to be a root of more complex hierarchy
+    only_throw_errors: true # error, prevents bad practice that should not be allowed by compiler in he first place
+    overridden_fields: true # warning, reports bad practise
+    package_api_docs: false # this should be enabled for published libraries or when the team is too large for everybody to know function of all kits
+    package_prefixed_library_names: true # info, recommended
+    parameter_assignments: false # it is often practical to e.g. increment param value, RECONSIDER - assigning to params might be confusing
+    prefer_adjacent_string_concatenation: true # info, recommended, removes extra character
+    prefer_asserts_in_initializer_lists: true # info, promotes better syntax
+    prefer_asserts_with_message: false # RECONSIDER, asserts would be too much work?
+    prefer_collection_literals: false # recommended, always found this rule strange, RECONSIDER - literals are shorter
+    prefer_conditional_assignment: true # info, recommended, promotes better and more concise syntax
+    prefer_const_constructors: false # recommended, premature optimisation that leads to inconvenient unnecessary code changes in Flutter apps. Might be enabled for pure Dart projects?
+    prefer_const_constructors_in_immutables: false # recommended, same as above
+    prefer_const_declarations: true # info, recommended, const for declaration has no disadvantage but it has advantages
+    prefer_const_literals_to_create_immutables: true # info, recommended, promotes true immutability
+    prefer_constructors_over_static_methods: true # info, promotes more advanced Dart syntax
+    prefer_contains: true # warning, recommended, promotes much cleaner syntax
+    prefer_double_quotes: false # we use single quotes
+    prefer_expression_function_bodies: false # TRIED but was forcing multiline methods with single return statement to use => syntax as well, causing ugly code
+    prefer_final_fields: true # info, final fields are preferred. RECONSIDER - make this warning or even error if does not bother during development (before changes that require it to be non-final)
+    prefer_final_in_for_each: true # info, promotes immutability, RECONSIDER - make this warning or even error if does not bother during development (before changes that require it to be non-final)
+    prefer_final_locals: true # info, final variables are basic good practice, RECONSIDER - make this warning or even error if does not bother during development (before changes that require it to be non-final)
+    prefer_final_parameters: false # too verbose, RECONSIDER - it is a good practise
+    prefer_foreach: true # info, shorter syntax, RECONSIDER - might have many false positives due to semantic difference it causes
+    prefer_for_elements_to_map_fromIterable: true # info, recommended, promotes higher-level syntax
+    prefer_function_declarations_over_variables: true # warning, recommended, prevents rather bad practice
+    prefer_generic_function_type_aliases: true # error, recommended, this old syntax cannot be used, for consistency and readability
+    prefer_if_elements_to_conditional_expressions: true # warning, promotes stronger, more advanced syntax
+    prefer_if_null_operators: true # info, recommended, promotes advanced syntax
+    prefer_initializing_formals: true # info, recommended, promotes advanced syntax
+    prefer_inlined_adds: true # error, recommended, prevents unnecessary commands
+    prefer_interpolation_to_compose_strings: true # info, recommended, RECONSIDER - it is easier to read but I do not think it is easier to write
+    prefer_int_literals: false # matter of individual style
+    prefer_is_empty: true # warning, recommended, more idiomatic, easier to read
+    prefer_is_not_empty: true # warning, recommended, same as above
+    prefer_is_not_operator: true # warning, recommended, shorter syntax, less parentheses
+    prefer_iterable_whereType: true # info, recommended, more idiomatic, easier to read
+    prefer_mixin: true # error, don't use old syntax
+    prefer_null_aware_operators: true # warning, recommended, promotes shorter, more idiomatic, easier to read
+    prefer_null_aware_method_calls: true # warning, recommended, promotes shorter, more idiomatic, easier to read
+    prefer_single_quotes: true # error, we use single quotes
+    prefer_spread_collections: true # info, recommended, promotes advanced syntax
+    prefer_typing_uninitialized_variables: true # error, recommended, prevents untyped variables
+    provide_deprecation_message: true # error, recommended, promotes good practise
+    public_member_api_docs: false # too much extra work, might be a good thing for published libraries
+    recursive_getters: true # error, recommended, prevents endless loop
+    require_trailing_commas: false # leads to bad formatting
+    sized_box_for_whitespace: true # info, flutter, promotes good practice
+    sized_box_shrink_expand: true # info, promotes more idiomatic code
+    slash_for_doc_comments: true # warning, consistency
+    sort_child_properties_last: false # flutter, last should be the property that is the most complex, which is not always child
+    sort_constructors_first: false # constructors should go below the fields not the other way around
+    sort_unnamed_constructors_first: true # info, unnamed constructors are more code, they should go first
+    tighten_type_of_initializing_formals: true # warning, teaches advanced language feature, promotes type safe code
+    type_annotate_public_apis: true # error, strong typing should be enforced everywhere
+    type_init_formals: true # info, promotes concise code
+    unawaited_futures: true # warning, promotes longer but more idiomatic code
+    unnecessary_await_in_return: true # info, just do this consistently, without one extra word
+    unnecessary_brace_in_string_interps: true # info, recommended, RECONSIDER - this often leads to code reshaping when simple variable is swapped for expression
+    unnecessary_const: true # info, recommended, removes unnecessary keyword
+    unnecessary_constructor_name: true # error, recommended, prevents old syntax
+    unnecessary_final: false # we do want final, it is core good practise
+    unnecessary_new: true # error, recommended, prevents old verbose syntax
+    unnecessary_null_aware_assignments: true # error, recommended, prevents no-op command
+    unnecessary_null_in_if_null_operators: true # error, recommended, prevents no-op command
+    unnecessary_getters_setters: true # warning, recommended, removes unnecessary code
+    unnecessary_lambdas: true # info, promotes simple, more advanced & idiomatic syntax, RECONSIDER - consider making this warning or error
+    unnecessary_late: true # info, recommended, removes unnecessary keyword
+    unnecessary_nullable_for_final_variable_declarations: true # info, recommended, fixes incorrect type
+    unnecessary_null_aware_operator_on_extension_on_nullable: true # info, RECONSIDER - not sure what this catches
+    unnecessary_null_checks: true # info, removes redundant force unwrap, RECONSIDER - experimental
+    unnecessary_overrides: true # info, recommended, removes no-op code
+    unnecessary_parenthesis: true # info, removes unnecessary syntax (parenthesis)
+    unnecessary_raw_strings: true # warning, prevents advanced syntax when simple is enough
+    unnecessary_string_escapes: true # info, recommended, removes unnecessary syntax tokens
+    unnecessary_string_interpolations: true # info, recommended, removes unnecessary syntax tokens
+    unnecessary_this: true # info, recommended, removes unnecessary syntax tokens
+    unnecessary_to_list_in_spreads: true # info, removes unnecessary syntax tokens
+    unreachable_from_main: false # would only report issues during development
+    use_colored_box: true # info, promotes simpler flutter component
+    use_decorated_box: true # info, promotes simpler flutter component
+    use_enums: true # info, RECONSIDER - experimental, will it work? How many false positives?
+    use_full_hex_values_for_flutter_colors: true # info, flutter, constancy, RECONSIDER - many tools export hex colors without alpha, might be more practical
+    use_function_type_syntax_for_parameters: true # info, recommended, consistently prefer newer syntax
+    use_if_null_to_convert_nulls_to_bools: true # info, more readable syntax consistently
+    use_is_even_rather_than_modulo: true # info, teaches language perk
+    use_late_for_private_fields_and_variables: false # can motivate to create bugs by fixing e.g. missing "?" by adding "late". RECONSIDER - more research needed
+    use_named_constants: true # info, promotes use of language feature
+    use_rethrow_when_possible: true # info, recommended, promotes use of language feature
+    use_raw_strings: true # info, can help with writing of regular expressions
+    use_setters_to_change_properties: true # warning, helps writing more idiomatic code and promotes language feature
+    use_string_buffers: true # warning, RECONSIDER - if this also triggers when string not is composed in a cycle, this should be disabled
+    use_string_in_part_of_directives: false # for simple
+    use_super_parameters: true # info, promotes modern, more readable syntax
+    use_test_throws_matchers: true # warning, enforces better handing of exceptions in unit tests via language feature
+    use_to_and_as_if_applicable: true # info, EXPERIMENT, let's see if it is helpful. RECONSIDER - evaluate
+    void_checks: true # error, recommended, compiler should not allow this in the first place

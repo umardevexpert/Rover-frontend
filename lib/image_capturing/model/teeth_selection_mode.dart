@@ -1,0 +1,1 @@
+enum TeethSelectionMode { manual, auto }

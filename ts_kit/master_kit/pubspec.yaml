@@ -1,0 +1,21 @@
+# ©2022 TypeSoft s. r. o. All rights reserved.
+
+name: master_kit
+description: Core goodies and utilities handly for Flutter development.
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  rxdart: ^0.27.7
+  diacritic: ^0.1.4
+  universal_io: ^2.2.2
+  collection: ^1.18.0
+  meta: ^1.9.1
+  get_it: any
+  json_annotation: ^4.8.1
+
+dev_dependencies:
+  lints: ^3.0.0
+  test: ^1.25.2
