@@ -75,6 +75,9 @@ dependencies:
   bitsdojo_window: ^0.1.6
   window_manager: ^0.3.8
   audioplayers: ^6.1.0
+  shelf_router: ^1.1.4
+  shelf_cors_headers: ^0.1.5
+
 
 dev_dependencies:
   flutter_test:

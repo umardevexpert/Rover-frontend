@@ -49,38 +49,50 @@ class OpenDentalConnectionService implements PMSConnectionService {
   /// /api/v1/appointments?dateStart=2020-07-30&dateEnd=2020-08-02
   @override
   Future<List<Appointment>> getAppointments({AppointmentDateFilter? filter}) => _makeRequest(
-        endpointSuffix: _APPOINTMENTS_ENDPOINT,
-        queryParameters: _createAppointmentDateQueryParameters(filter),
-        fromJson: OpenDentalAppointment.fromJson,
-        toDomainMapper: mapper.mapAppointment,
-      );
+    endpointSuffix: _APPOINTMENTS_ENDPOINT,
+    queryParameters: _createAppointmentDateQueryParameters(filter),
+    fromJson: OpenDentalAppointment.fromJson,
+    toDomainMapper: mapper.mapAppointment,
+  );
 
   /// /api/v1/patients/Simple?hideInactive=true
   @override
-  Future<List<Patient>> getPatients() => _makeRequest(
-        endpointSuffix: _PATIENTS_ENDPOINT,
-        queryParameters: {'hideInactive': 'true'},
-        fromJson: OpenDentalPatient.fromJson,
-        toDomainMapper: mapper.mapPatient,
-      );
+  Future<List<Patient>> getPatients() async {
+    final response = await _client.get(Uri.parse('http://192.168.18.140:8080/api/patients'));
 
+    if (response.statusCode != 200) {
+      throw ConnectionException(message: 'Failed to fetch patients from Daemon');
+    }
+
+    // Parse the response
+    final List<dynamic> jsonList = jsonDecode(response.body);
+
+    // Check if the list is empty
+    if (jsonList.isEmpty) {
+      print('No patients found.');
+      return [];
+    }
+
+    // Map the JSON to Patient objects
+    return jsonList.map((patientData) => mapper.mapPatient(OpenDentalPatient.fromJson(patientData))).toList();
+  }
   /// /api/v1/treatplans?PatNum=1897
   @override
   Future<List<TreatmentPlan>> getTreatmentPlansByPatientId(String patientId) => _makeRequest(
-        endpointSuffix: _TREATMENT_PLANS_ENDPOINT,
-        queryParameters: {'PatNum': patientId},
-        fromJson: OpenDentalTreatmentPlan.fromJson,
-        toDomainMapper: mapper.mapTreatmentPlan,
-      );
+    endpointSuffix: _TREATMENT_PLANS_ENDPOINT,
+    queryParameters: {'PatNum': patientId},
+    fromJson: OpenDentalTreatmentPlan.fromJson,
+    toDomainMapper: mapper.mapTreatmentPlan,
+  );
 
   /// /api/v1/proctps?TreatPlanNum=963
   @override
   Future<List<Treatment>> getTreatmentsByTreatmentPlanId(String treatmentPlanId) => _makeRequest(
-        endpointSuffix: _TREATMENTS_ENDPOINT,
-        queryParameters: {'TreatPlanNum': treatmentPlanId},
-        fromJson: OpenDentalTreatment.fromJson,
-        toDomainMapper: mapper.mapTreatment,
-      );
+    endpointSuffix: _TREATMENTS_ENDPOINT,
+    queryParameters: {'TreatPlanNum': treatmentPlanId},
+    fromJson: OpenDentalTreatment.fromJson,
+    toDomainMapper: mapper.mapTreatment,
+  );
 
   /// TODO(andy): temporary
   List<ToothInitials> _getMockedToothInitialsOfPatient(String patientId) {
@@ -168,10 +180,10 @@ class OpenDentalConnectionService implements PMSConnectionService {
   }
 
   List<TOut> _parseResponseBody<TOut, TODental>(
-    String responseBody,
-    Projector<Map<String, dynamic>, TODental> fromJson,
-    Projector<TODental, TOut> odMapper,
-  ) {
+      String responseBody,
+      Projector<Map<String, dynamic>, TODental> fromJson,
+      Projector<TODental, TOut> odMapper,
+      ) {
     final jsonList = jsonDecode(responseBody) as List;
     return jsonList.map((e) => fromJson(e)).map(odMapper).toList();
   }

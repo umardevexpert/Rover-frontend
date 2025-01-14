@@ -15,7 +15,7 @@ class ToothNumberPicker extends StatelessWidget {
   ToothNumberPicker({super.key, required this.patientId});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
     return MultiStreamBuilder2(
       stream1: _patientDetailController.selectedTeethStream,
       stream2: availableTeethStream.map((previews) => previews.expand((element) => element.teeth).toSet()),
