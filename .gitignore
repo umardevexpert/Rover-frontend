@@ -12,6 +12,8 @@
 .swiftpm/
 migrate_working_dir/
 
+/lib/daemon/  # Ignore the lib/daemon folder
+
 # IntelliJ related
 *.iml
 *.ipr

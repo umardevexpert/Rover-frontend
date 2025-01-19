@@ -58,8 +58,7 @@ class OpenDentalConnectionService implements PMSConnectionService {
   /// /api/v1/patients/Simple?hideInactive=true
   @override
   Future<List<Patient>> getPatients() async {
-    final response = await _client.get(Uri.parse('http://192.168.18.140:8080/api/patients'));
-
+    final response = await _client.get(Uri.parse('http://192.168.18.11:8080/api/patients'));
     if (response.statusCode != 200) {
       throw ConnectionException(message: 'Failed to fetch patients from Daemon');
     }

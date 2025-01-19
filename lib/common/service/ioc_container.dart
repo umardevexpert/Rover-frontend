@@ -20,7 +20,7 @@ import 'package:rover/open_dental_connection/models/open_dental_patient.dart';
 import 'package:rover/open_dental_connection/models/open_dental_tooth_initials.dart';
 import 'package:rover/open_dental_connection/models/open_dental_treatment.dart';
 import 'package:rover/open_dental_connection/models/open_dental_treatment_plan.dart';
-import 'package:rover/open_dental_connection/service/open_dental_connection_service.dart';
+import 'package:rover/daemon/daemon_service&APIendpoints.dart';
 import 'package:rover/open_dental_connection/service/open_dental_mapper.dart';
 import 'package:rover/patient/model/patients_table_column_type.dart';
 import 'package:rover/patient/service/patients_filtering_service.dart';
